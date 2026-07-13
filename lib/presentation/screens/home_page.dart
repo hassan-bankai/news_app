@@ -5,6 +5,13 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text("News App")));
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "News App",
+          style: Theme.of(context).primaryTextTheme.titleLarge,
+        ),
+      ),
+    );
   }
 }
