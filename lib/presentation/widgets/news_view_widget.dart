@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class NewsViewWidget extends StatefulWidget {
   NewsViewWidget({
     super.key,
@@ -31,10 +32,9 @@ class _NewsViewWidgetState extends State<NewsViewWidget> {
             SizedBox(height: 10),
             ClipRRect(
               borderRadius: BorderRadius.circular(6),
-              child: Image.asset(
-                widget.imagePath ?? "assets/image/dummy_image.png",
-                fit: BoxFit.cover,
-              ),
+              child: widget.imagePath != null
+                  ? Image.network(widget.imagePath!, fit: BoxFit.cover)
+                  : Image.asset('assets/image/dummy_image.png'),
             ),
             Text(
               widget.country ?? 'Europe',
