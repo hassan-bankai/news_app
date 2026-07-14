@@ -22,6 +22,18 @@ class NewsApp extends StatelessWidget {
           centerTitle: true,
           titleTextStyle: TextStyle(fontSize: 22, fontWeight: .bold),
         ),
+        textTheme: TextTheme(
+          bodySmall: TextStyle(
+            fontWeight: .w400,
+            fontSize: 13,
+            color: Color(0xffB0B3B8),
+          ),
+          bodyMedium: TextStyle(
+            fontWeight: .w400,
+            fontSize: 16,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
