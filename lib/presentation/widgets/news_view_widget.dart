@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -33,7 +34,13 @@ class _NewsViewWidgetState extends State<NewsViewWidget> {
             ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: widget.imagePath != null
-                  ? Image.network(widget.imagePath!, fit: BoxFit.cover)
+                  ? CachedNetworkImage(
+                      imageUrl: widget.imagePath!,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Center(
+                        child: Image.asset('assets/icons/loading.gif'),
+                      ),
+                    )
                   : Image.asset('assets/image/dummy_image.png'),
             ),
             Text(

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/logic/fetch_data.dart';
-import 'package:news_app/models/articles_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/view_model/cubit/base_state.dart';
+import 'package:news_app/view_model/cubit/news_cubit.dart';
+
+import 'package:news_app/repos/models/articles_model.dart';
 import 'package:news_app/presentation/widgets/news_view_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,43 +14,46 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  FetchData data = FetchDataFromApi();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("News App")),
-      body: FutureBuilder<List<Articles>>(
-        future: data.getData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                snapshot.error.toString(),
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 22,
-                  fontWeight: .bold,
-                ),
-              ),
-            );
-          }
-          if (snapshot.hasData) {
-            var articleList = snapshot.data ?? [];
-            return ListView.builder(
-              itemCount: articleList.length,
-              itemBuilder: (context, index) {
-                return NewsViewWidget(
-                  imagePath: articleList[index].urlToImage,
+    return BlocProvider<NewsCubit>(
+      create: (context) => NewsCubit()..fetchNews(),
+      child: Scaffold(
+        appBar: AppBar(title: Text("News App")),
+        body: BlocBuilder<NewsCubit, BaseState<List<Articles>>>(
+          builder: (context, state) {
+            if (state is LoadingState) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (state is SuccessState<List<Articles>>) {
+              return ListView.builder(
+                itemCount: state.data.length,
+                itemBuilder: (context, index) {
+                  return NewsViewWidget(
+                    imagePath: state.data[index].urlToImage,
 
-                  country: articleList[index].author ?? '',
-                  title: articleList[index].title ?? '',
-                  onTap: () {},
-                );
-              },
-            );
-          }
-          return Center(child: CircularProgressIndicator());
-        },
+                    country: state.data[index].author ?? '',
+                    title: state.data[index].title ?? '',
+                    onTap: () {},
+                  );
+                },
+              );
+            }
+            if (state is ErrorState<List<Articles>>) {
+              return Center(
+                child: Text(
+                  state.error,
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 22,
+                    fontWeight: .bold,
+                  ),
+                ),
+              );
+            }
+            return Container();
+          },
+        ),
       ),
     );
   }
